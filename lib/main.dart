@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -41,6 +42,16 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Text('BASE_URL: ${dotenv.env['BASE_URL']}'),
             Text('ENV: ${dotenv.env['ENV']}'),
+            FutureBuilder(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, state) {
+                if (!state.hasData) {
+                  return const SizedBox.shrink();
+                }
+
+                return Text('PACKAGE NAME: ${state.data?.packageName ?? ''}');
+              },
+            ),
           ],
         ),
       ),
