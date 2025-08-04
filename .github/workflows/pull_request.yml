@@ -1,4 +1,4 @@
-name: Run Unit Tests
+name: Build and Test
 
 on:
   pull_request:
@@ -26,3 +26,30 @@ jobs:
 
       - name: Run Flutter tests
         run: flutter test
+
+  build:
+    name: Run Flutter Unit Tests
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'oracle'
+          java-version: '17'
+
+      - name: Set Up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '${{ env.FLUTTER_VERSION }}'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
